@@ -4,12 +4,18 @@ services:
     container_name: td1-saas-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
     environment:
-      PORT: 3000
-      MONGO_URI: mongodb://mongo:27017/saas_project
+      PORT: ${PORT:-3000}
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/saas_project}
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:' + (process.env.PORT || 3000) + '/api/health').then(async r => process.exit(r.ok && (await r.json()).mongo ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     depends_on:
       mongo:
         condition: service_healthy

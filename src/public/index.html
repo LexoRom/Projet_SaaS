@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Atlas — Gestion de projet</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1><span class="brand-mark">P</span> Atlas</h1>
+      <small id="companyLabel">TD1 - Gestion de projet</small>
+    </div>
+    <div id="sessionBar" class="hidden">
+      <span id="userLabel"></span>
+      <button id="newCompanyBtn" class="secondary">Nouvelle entreprise</button>
+      <button id="editCompanyBtn" class="secondary">Entreprise</button>
+      <button id="deleteCompanyBtn" class="danger">Supprimer l'entreprise</button>
+      <button id="logoutBtn" class="secondary">Déconnexion</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="authView" class="panel">
+      <div class="tabs">
+        <button id="loginTab" class="active">Connexion</button>
+        <button id="bootstrapTab">Première installation</button>
+      </div>
+      <form id="loginForm">
+        <h2>Connexion</h2>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Mot de passe" required>
+        <input name="companyName" placeholder="Entreprise (si plusieurs comptes)" autocomplete="organization">
+        <button>Se connecter</button>
+      </form>
+      <form id="bootstrapForm" class="hidden">
+        <h2>Créer la première entreprise</h2>
+        <input name="companyName" placeholder="Nom de l'entreprise" required>
+        <input name="name" placeholder="Nom administrateur" required>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" minlength="6" placeholder="Mot de passe (6 caractères min.)" required>
+        <button>Initialiser</button>
+      </form>
+      <p id="authMsg" class="message"></p>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div class="workspace-bar">
+        <div class="project-switcher">
+          <span class="eyebrow">ESPACE DE TRAVAIL</span>
+          <select id="projectSelect" aria-label="Choisir un projet"></select>
+        </div>
+        <div class="workspace-actions">
+          <button id="usersBtn" class="button-quiet">Équipe</button>
+          <button id="newProjectBtn" class="button-quiet">＋ Projet</button>
+          <button id="editProjectBtn" class="button-quiet">Modifier</button>
+          <button id="newTaskBtn" class="button-primary">＋ Nouvelle tâche</button>
+        </div>
+      </div>
+
+      <section class="board-shell">
+        <div class="board-heading">
+          <div>
+            <span class="eyebrow accent">VOTRE TABLEAU</span>
+            <h2 id="projectName">Aucun projet</h2>
+            <p id="projectDescription">Créez un projet pour commencer à organiser le travail.</p>
+          </div>
+          <div class="board-heading-right">
+            <div id="projectMemberAvatars" class="avatar-stack" aria-label="Membres du projet"></div>
+            <button id="deleteProjectBtn" class="icon-button danger" aria-label="Supprimer le projet" title="Supprimer le projet">···</button>
+          </div>
+        </div>
+
+        <div class="board-toolbar">
+          <label class="search-box"><span aria-hidden="true">⌕</span><input id="taskSearch" type="search" placeholder="Rechercher une tâche…" aria-label="Rechercher une tâche"></label>
+          <div class="filter-group">
+            <select id="priorityFilter" aria-label="Filtrer par priorité"><option value="all">Toutes les priorités</option><option value="high">Urgente</option><option value="medium">Normale</option><option value="low">Faible</option></select>
+            <select id="dueFilter" aria-label="Filtrer par échéance"><option value="all">Toutes les échéances</option><option value="overdue">En retard</option><option value="week">7 prochains jours</option><option value="none">Sans échéance</option></select>
+            <label class="toggle-filter"><input id="onlyMine" type="checkbox"><span>Mes tâches</span></label>
+            <button id="clearFilters" class="text-button hidden">Effacer</button>
+          </div>
+        </div>
+
+        <div class="board-summary" id="boardSummary">
+          <span><strong id="taskTotal">0</strong> tâche<span id="taskPlural">s</span></span>
+          <span class="summary-divider"></span>
+          <span><i class="summary-dot violet"></i><strong id="taskProgress">0</strong> terminée<span id="donePlural">s</span></span>
+          <span class="summary-divider"></span>
+          <span><i class="summary-dot coral"></i><strong id="taskOverdue">0</strong> en retard</span>
+          <span id="filterResult" class="filter-result hidden"></span>
+        </div>
+
+        <div class="kanban" id="kanbanBoard">
+          <section class="column todo-column" data-status="todo" aria-labelledby="todoTitle">
+            <div class="column-head"><div class="column-title"><span class="column-icon">○</span><h3 id="todoTitle">À faire</h3><span id="todoCount" class="count-pill">0</span></div><button class="column-add" data-add-status="todo" aria-label="Ajouter à À faire">＋</button></div>
+            <div id="todo" class="dropzone"></div>
+          </section>
+          <section class="column doing-column" data-status="doing" aria-labelledby="doingTitle">
+            <div class="column-head"><div class="column-title"><span class="column-icon">◷</span><h3 id="doingTitle">En cours</h3><span id="doingCount" class="count-pill">0</span></div><button class="column-add" data-add-status="doing" aria-label="Ajouter à En cours">＋</button></div>
+            <div id="doing" class="dropzone"></div>
+          </section>
+          <section class="column done-column" data-status="done" aria-labelledby="doneTitle">
+            <div class="column-head"><div class="column-title"><span class="column-icon">✓</span><h3 id="doneTitle">Terminé</h3><span id="doneCount" class="count-pill">0</span></div><button class="column-add" data-add-status="done" aria-label="Ajouter à Terminé">＋</button></div>
+            <div id="done" class="dropzone"></div>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="projectDialog">
+    <form id="projectForm" method="dialog">
+      <h2 id="projectDialogTitle">Nouveau projet</h2>
+      <input name="name" placeholder="Nom" required>
+      <textarea name="description" placeholder="Description"></textarea>
+      <label>Membres</label>
+      <div id="projectMembers"></div>
+      <div class="actions"><button type="button" class="secondary" onclick="projectDialog.close()">Annuler</button><button>Créer</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="taskDialog">
+    <form id="taskForm" method="dialog">
+      <h2 id="taskDialogTitle">Nouvelle tâche</h2>
+      <input name="title" placeholder="Titre de la tâche" aria-label="Titre de la tâche" required>
+      <textarea name="description" placeholder="Description et détails" aria-label="Description et détails"></textarea>
+      <fieldset class="assignee-picker"><legend>Personnes assignées</legend>
+        <input id="assigneeSearch" type="search" placeholder="Rechercher un membre…" aria-label="Rechercher un membre">
+        <div id="selectedAssignees" class="selected-assignees"><span class="muted">Aucun assigné</span></div>
+        <div id="assigneeChoices" class="assignee-choices"></div>
+      </fieldset>
+      <label for="taskPriority">Priorité</label><select id="taskPriority" name="priority"><option value="low">Faible</option><option value="medium" selected>Normale</option><option value="high">Urgente</option></select>
+      <label for="taskDueDate">Échéance</label><input id="taskDueDate" name="dueDate" type="date">
+      <label for="taskStatus">Statut</label><select id="taskStatus" name="status"><option value="todo">À faire</option><option value="doing">En cours</option><option value="done">Terminé</option></select>
+      <div class="actions"><button type="button" class="secondary" onclick="taskDialog.close()">Annuler</button><button id="taskSubmitBtn">Créer</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="userEditDialog">
+    <form id="userEditForm" method="dialog">
+      <h2>Modifier l'utilisateur</h2>
+      <input name="name" placeholder="Nom" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select>
+      <input name="password" type="password" minlength="6" placeholder="Nouveau mot de passe (facultatif)">
+      <div class="actions"><button type="button" class="secondary" onclick="userEditDialog.close()">Annuler</button><button>Enregistrer</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="companyDialog">
+    <form id="companyForm" method="dialog">
+      <h2>Modifier l'entreprise</h2>
+      <input name="name" placeholder="Nom de l'entreprise" required>
+      <div class="actions"><button type="button" class="secondary" onclick="companyDialog.close()">Annuler</button><button>Enregistrer</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="usersDialog">
+    <form id="userForm" method="dialog">
+      <h2>Utilisateurs de l'entreprise</h2>
+      <div id="usersList"></div>
+      <div id="userAddSection">
+        <hr>
+        <h3>Ajouter</h3>
+        <input name="name" placeholder="Nom" required>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" minlength="6" placeholder="Mot de passe" required>
+        <select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select>
+        <button>Ajouter</button>
+      </div>
+      <div class="actions"><button type="button" class="secondary" onclick="usersDialog.close()">Fermer</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="newCompanyDialog">
+    <form id="newCompanyForm" method="dialog">
+      <h2>Créer une nouvelle entreprise</h2>
+      <input name="companyName" placeholder="Nom de l'entreprise" required>
+      <input name="name" placeholder="Nom de l'administrateur" required>
+      <input name="email" type="email" placeholder="Email de connexion" required>
+      <input name="password" type="password" minlength="6" placeholder="Mot de passe (6 caractères min.)" required>
+      <div class="actions"><button type="button" class="secondary" onclick="newCompanyDialog.close()">Annuler</button><button>Créer</button></div>
+    </form>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>
